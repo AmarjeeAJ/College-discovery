@@ -1,48 +1,37 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { CheckCircle, HelpCircle, ArrowRight } from 'lucide-react';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import Button from '@/components/common/Button';
 import CollegeCard from '@/components/college/CollegeCard';
 import AdmissionEnquiryForm from '@/components/forms/AdmissionEnquiryForm';
-import { apiService } from '@/lib/apiService';
+import { locationsData } from '@/lib/data/locations';
+import { collegesData } from '@/lib/data/colleges';
 
 export default function LocationDetailPage({ params }) {
-  const unwrappedParams = use(params);
-  const city = unwrappedParams.city;
+  const routeParams = useParams();
+  const city = routeParams?.city || params?.city || 'jaipur';
 
-  const [location, setLocation] = useState(null);
-  const [colleges, setColleges] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadLocationData() {
-      setLoading(true);
-      const targetCity = city || 'jaipur';
-      const locRes = await apiService.getLocationBySlug(targetCity);
-      if (locRes) {
-        setLocation(locRes);
-        const collegesRes = await apiService.getColleges({ city: locRes.name });
-        if (collegesRes) {
-          setColleges(collegesRes);
-        }
-      }
-      setLoading(false);
-      window.scrollTo(0, 0);
-    }
-    loadLocationData();
+  const location = useMemo(() => {
+    const target = (city || 'jaipur').toLowerCase().trim();
+    return (
+      locationsData.find((l) => l.slug.toLowerCase() === target || l.name.toLowerCase() === target) ||
+      locationsData[0]
+    );
   }, [city]);
 
-  if (loading) {
-    return (
-      <div className="py-28 text-center text-brand-gray">
-        <div className="w-8 h-8 border-2 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-        <span>Loading educational hub profile...</span>
-      </div>
-    );
-  }
+  const colleges = useMemo(() => {
+    if (!location) return [];
+    const target = location.name.toLowerCase();
+    return collegesData.filter((c) => c.city.toLowerCase() === target || (location.slug === 'delhi' && (c.state.toLowerCase().includes('delhi') || c.city.toLowerCase().includes('noida') || c.city.toLowerCase().includes('gurgaon'))));
+  }, [location]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [city]);
 
   if (!location) {
     return (

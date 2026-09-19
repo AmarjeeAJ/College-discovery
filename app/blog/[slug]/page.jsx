@@ -1,45 +1,29 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import Button from '@/components/common/Button';
 import AdmissionEnquiryForm from '@/components/forms/AdmissionEnquiryForm';
-import { apiService } from '@/lib/apiService';
+import { blogsData } from '@/lib/data/blogs';
 
 export default function BlogDetailPage({ params }) {
-  const unwrappedParams = use(params);
-  const slug = unwrappedParams.slug;
+  const routeParams = useParams();
+  const slug = routeParams?.slug || params?.slug || '';
 
-  const [post, setPost] = useState(null);
-  const [relatedPosts, setRelatedPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadPost() {
-      setLoading(true);
-      const res = await apiService.getBlogBySlug(slug);
-      if (res.success) {
-        setPost(res.data);
-        const allRes = await apiService.getBlogs();
-        if (allRes.success) {
-          setRelatedPosts(allRes.data.filter((b) => b.slug !== slug).slice(0, 2));
-        }
-      }
-      setLoading(false);
-      window.scrollTo(0, 0);
-    }
-    loadPost();
+  const post = useMemo(() => {
+    const target = (slug || '').toLowerCase().trim();
+    return blogsData.find((b) => b.slug.toLowerCase() === target) || blogsData[0];
   }, [slug]);
 
-  if (loading) {
-    return (
-      <div className="py-28 text-center text-brand-gray">
-        <div className="w-8 h-8 border-2 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-        <span>Loading article...</span>
-      </div>
-    );
-  }
+  const relatedPosts = useMemo(() => {
+    return blogsData.filter((b) => b.slug !== slug).slice(0, 2);
+  }, [slug]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   if (!post) {
     return (
@@ -93,6 +77,8 @@ export default function BlogDetailPage({ params }) {
         <img
           src={post.coverImage}
           alt={post.title}
+          fetchPriority="high"
+          decoding="async"
           className="w-full h-full object-cover"
           onError={(e) => {
             e.currentTarget.onerror = null;

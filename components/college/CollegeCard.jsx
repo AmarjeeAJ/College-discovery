@@ -44,6 +44,7 @@ export default function CollegeCard({ college, viewMode = 'grid' }) {
             alt={college.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
+            decoding="async"
             onError={handleImageError}
           />
           <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
@@ -155,6 +156,7 @@ export default function CollegeCard({ college, viewMode = 'grid' }) {
             alt={`${college.name} campus building`}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
+            decoding="async"
             onError={handleImageError}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

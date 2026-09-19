@@ -17,7 +17,7 @@ export const metadata = {
   openGraph: {
     title: 'Get Your College Discovered by More Students | College Leadership',
     description: 'List your college on India’s verified education platform. Expand organic search reach, showcase courses & audited placements, and capture high-intent student enquiries.',
-    url: 'https://theshineeducation.com/college-listing',
+    url: 'https://collegeleadership.in/college-listing',
     siteName: 'College Leadership',
     locale: 'en_IN',
     type: 'website',
@@ -33,7 +33,7 @@ export default function CollegeListingLayout({ children }) {
     provider: {
       '@type': 'EducationalOrganization',
       name: 'College Leadership',
-      url: 'https://theshineeducation.com',
+      url: 'https://collegeleadership.in',
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'Malviya Nagar & Tonk Road',

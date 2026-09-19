@@ -1,52 +1,42 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { Clock, CheckCircle2, ArrowRight, HelpCircle, Briefcase } from 'lucide-react';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import Button from '@/components/common/Button';
 import CollegeCard from '@/components/college/CollegeCard';
 import AdmissionEnquiryForm from '@/components/forms/AdmissionEnquiryForm';
-import { apiService } from '@/lib/apiService';
+import { coursesData } from '@/lib/data/courses';
+import { collegesData } from '@/lib/data/colleges';
 
 export default function CourseDetailPage({ params }) {
-  const unwrappedParams = use(params);
-  const slug = unwrappedParams.slug;
+  const routeParams = useParams();
+  const slug = routeParams?.slug || params?.slug || 'btech';
 
-  const [course, setCourse] = useState(null);
-  const [relatedColleges, setRelatedColleges] = useState([]);
-  const [otherCourses, setOtherCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadCourseData() {
-      setLoading(true);
-      const data = await apiService.getCourseBySlug(slug || 'btech');
-      if (data) {
-        setCourse(data);
-        const collegesRes = await apiService.getColleges({ stream: data.shortName });
-        if (collegesRes) {
-          setRelatedColleges(collegesRes.slice(0, 3));
-        }
-        const allCourses = await apiService.getCourses();
-        if (allCourses) {
-          setOtherCourses(allCourses.filter((c) => c.slug !== slug).slice(0, 4));
-        }
-      }
-      setLoading(false);
-      window.scrollTo(0, 0);
-    }
-    loadCourseData();
+  const course = useMemo(() => {
+    const target = (slug || 'btech').toLowerCase().trim();
+    return coursesData.find((c) => c.slug.toLowerCase() === target) || coursesData[0];
   }, [slug]);
 
-  if (loading) {
-    return (
-      <div className="py-28 text-center text-brand-gray">
-        <div className="w-8 h-8 border-2 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-        <span>Loading course guide...</span>
-      </div>
-    );
-  }
+  const relatedColleges = useMemo(() => {
+    if (!course) return [];
+    const streamTarget = (course.shortName || course.stream || '').toLowerCase().replace(/[\.\s-]/g, '');
+    return collegesData
+      .filter((c) =>
+        c.stream.some((s) => s.toLowerCase().replace(/[\.\s-]/g, '').includes(streamTarget))
+      )
+      .slice(0, 3);
+  }, [course]);
+
+  const otherCourses = useMemo(() => {
+    return coursesData.filter((c) => c.slug !== slug).slice(0, 4);
+  }, [slug]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   if (!course) {
     return (

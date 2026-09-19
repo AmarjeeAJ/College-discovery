@@ -75,11 +75,15 @@ export default function ContactPage() {
             <div className="space-y-2 text-brand-gray">
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-brand-teal shrink-0" />
-                <span>+91 98765 43210 / +91 0141 2780000</span>
+                <a href="tel:+919358939090" className="hover:text-brand-teal transition-colors">
+                  +91 93589 39090
+                </a>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-brand-teal shrink-0" />
-                <span>admissions@theshineeducation.com</span>
+                <a href="mailto:collegeleadershipdheeraj@gmail.com" className="hover:text-brand-teal transition-colors">
+                  collegeleadershipdheeraj@gmail.com
+                </a>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-brand-teal shrink-0" />
@@ -89,7 +93,7 @@ export default function ContactPage() {
 
             <div className="pt-2">
               <a
-                href="https://wa.me/919876543210"
+                href="https://wa.me/919358939090"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-emerald-600 text-white hover:bg-emerald-700 px-4 py-2 rounded text-xs font-semibold transition-colors"

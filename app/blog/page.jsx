@@ -61,6 +61,8 @@ export default function BlogListingPage() {
                 <img
                   src={post.coverImage}
                   alt={post.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
                     e.currentTarget.onerror = null;

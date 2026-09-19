@@ -55,7 +55,7 @@ export default function PrivacyPage() {
       <section className="space-y-3">
         <h2 className="text-base font-bold text-brand-dark">4. Grievance Redressal</h2>
         <p>
-          For any questions, data modification requests, or privacy concerns, you may write to our Data Protection Officer at: <strong>privacy@theshineeducation.com</strong>.
+          For any questions, data modification requests, or privacy concerns, you may write to our Data Protection Officer at: <strong className="text-brand-teal">collegeleadershipdheeraj@gmail.com</strong>.
         </p>
       </section>
     </div>

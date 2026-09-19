@@ -96,7 +96,7 @@ export default function AdmissionEnquiryForm({ defaultCollege = '', defaultCours
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="e.g. 9876543210"
+            placeholder="e.g. 9358939090"
             className="w-full border border-gray-300 rounded px-3 py-2 text-xs text-brand-dark focus:border-brand-teal focus:ring-1 focus:ring-brand-teal focus:outline-none"
           />
         </div>

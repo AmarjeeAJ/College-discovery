@@ -24,6 +24,7 @@ export default function LocationCard({ location }) {
             alt={`Higher education colleges in ${location?.name || 'India'}`}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
+            decoding="async"
             onError={() => {
               setImgSrc('/images/colleges/campus-fallback.jpg');
             }}

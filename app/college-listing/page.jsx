@@ -220,7 +220,7 @@ export default function CollegeListingPage() {
                   List Your College
                 </Button>
                 <Button
-                  href="tel:+919876543210"
+                  href="tel:+919358939090"
                   variant="outline"
                   size="lg"
                   icon={Phone}
@@ -1098,7 +1098,7 @@ export default function CollegeListingPage() {
                     type="tel"
                     name="phone"
                     required
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 93589 39090"
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-brand-border rounded focus:outline-none focus:border-brand-teal"

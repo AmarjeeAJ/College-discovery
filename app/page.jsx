@@ -1,6 +1,4 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import Link from 'next/link';
 import {
   ShieldCheck,
@@ -22,50 +20,19 @@ import CourseCard from '@/components/course/CourseCard';
 import LocationCard from '@/components/location/LocationCard';
 import HeroSearchBox from '@/components/search/HeroSearchBox';
 import AdmissionEnquiryForm from '@/components/forms/AdmissionEnquiryForm';
-import { apiService } from '@/lib/apiService';
+import { collegesData } from '@/lib/data/colleges';
+import { coursesData } from '@/lib/data/courses';
+import { locationsData } from '@/lib/data/locations';
+import { blogsData } from '@/lib/data/blogs';
+import { faqsData } from '@/lib/data/faqs';
 
 export default function HomePage() {
-  const [featuredColleges, setFeaturedColleges] = useState([]);
-  const [btechColleges, setBtechColleges] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [locations, setLocations] = useState([]);
-  const [blogs, setBlogs] = useState([]);
-  const [faqs, setFaqs] = useState([]);
-
-  useEffect(() => {
-    async function loadData() {
-      const [collegesRes, coursesRes, locsRes, blogsRes, faqsRes] = await Promise.all([
-        apiService.getColleges(),
-        apiService.getCourses(),
-        apiService.getLocations(),
-        apiService.getBlogs(),
-        apiService.getFaqs()
-      ]);
-
-      if (collegesRes) {
-        const cList = Array.isArray(collegesRes) ? collegesRes : (collegesRes.data || []);
-        setFeaturedColleges(cList.filter((c) => c.featured).slice(0, 4));
-        setBtechColleges(cList.filter((c) => c.stream.includes('B.Tech')).slice(0, 3));
-      }
-      if (coursesRes) {
-        const crList = Array.isArray(coursesRes) ? coursesRes : (coursesRes.data || []);
-        setCourses(crList.slice(0, 4));
-      }
-      if (locsRes) {
-        const lList = Array.isArray(locsRes) ? locsRes : (locsRes.data || []);
-        setLocations(lList.slice(0, 4));
-      }
-      if (blogsRes) {
-        const bList = Array.isArray(blogsRes) ? blogsRes : (blogsRes.data || []);
-        setBlogs(bList.slice(0, 3));
-      }
-      if (faqsRes) {
-        const fList = Array.isArray(faqsRes) ? faqsRes : (faqsRes.data || []);
-        setFaqs(fList);
-      }
-    }
-    loadData();
-  }, []);
+  const featuredColleges = useMemo(() => collegesData.filter((c) => c.featured).slice(0, 4), []);
+  const btechColleges = useMemo(() => collegesData.filter((c) => c.stream.includes('B.Tech')).slice(0, 3), []);
+  const courses = useMemo(() => coursesData.slice(0, 4), []);
+  const locations = useMemo(() => locationsData.slice(0, 4), []);
+  const blogs = useMemo(() => blogsData.slice(0, 3), []);
+  const faqs = useMemo(() => faqsData, []);
 
   return (
     <div className="space-y-16 sm:space-y-24">
@@ -120,8 +87,10 @@ export default function HomePage() {
             <div className="lg:col-span-5 relative">
               <div className="relative rounded-sm overflow-hidden shadow-xl">
                 <img
-                  src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1000&q=80"
-                  alt="Indian university students collaborating on campus"
+                  src="/images/hero-students.jpg"
+                  alt="College Leadership students studying and collaborating"
+                  fetchPriority="high"
+                  decoding="async"
                   className="w-full h-[400px] sm:h-[480px] object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
@@ -480,7 +449,7 @@ export default function HomePage() {
 
           {/* Subtle logo emblem in background */}
           <div className="absolute -right-8 -bottom-8 opacity-10 pointer-events-none hidden md:block">
-            <img src="/emblem.png" alt="" className="w-72 h-72 object-contain" />
+            <img src="/emblem.png" alt="" loading="lazy" decoding="async" className="w-72 h-72 object-contain" />
           </div>
         </div>
       </section>

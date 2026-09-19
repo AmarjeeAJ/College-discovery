@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,14 +6,19 @@
   color-scheme: light;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-inter, 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
   color: #111111;
   background-color: #FFFFFF;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Subtle dot-pattern background inspired by brand logo */
@@ -53,3 +56,14 @@ body {
   outline: 2px solid #079BB5;
   outline-offset: 2px;
 }
+
+/* Smooth and hardware-accelerated image & card rendering */
+img {
+  content-visibility: auto;
+}
+
+article, .group {
+  backface-visibility: hidden;
+  contain-intrinsic-size: auto 300px;
+}
+

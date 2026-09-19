@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import CollegeCard from '@/components/college/CollegeCard';
 import Button from '@/components/common/Button';
-import { apiService } from '@/lib/apiService';
+import { collegesData } from '@/lib/data/colleges';
 import {
   Award,
   BookOpen,
@@ -431,8 +432,8 @@ const streamMetadata = {
 };
 
 export default function StreamCollegesPage({ params }) {
-  const unwrappedParams = use(params);
-  const streamKey = (unwrappedParams.stream || 'btech').toLowerCase();
+  const routeParams = useParams();
+  const streamKey = (routeParams?.stream || params?.stream || 'btech').toLowerCase();
   const meta = streamMetadata[streamKey] || streamMetadata.btech;
 
   const isEngineering = streamKey === 'btech' || streamKey === 'engineering';
@@ -440,8 +441,24 @@ export default function StreamCollegesPage({ params }) {
   const isMedical = streamKey === 'medical';
   const isLaw = streamKey === 'law';
 
-  const [colleges, setColleges] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const colleges = useMemo(() => {
+    const target = meta.streamFilter.toLowerCase().replace(/[\.\s-]/g, '');
+    return collegesData.filter((c) =>
+      c.stream.some((s) => {
+        const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+        return (
+          norm.includes(target) ||
+          target.includes(norm) ||
+          (target === 'btech' && norm.includes('engineering')) ||
+          (target === 'engineering' && norm.includes('btech')) ||
+          (target === 'mba' && norm.includes('management')) ||
+          (target === 'management' && norm.includes('mba'))
+        );
+      })
+    );
+  }, [meta.streamFilter]);
+
+  const [loading, setLoading] = useState(false);
   const [filterType, setFilterType] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [openFaq, setOpenFaq] = useState(0);
@@ -450,27 +467,6 @@ export default function StreamCollegesPage({ params }) {
   const [leadForm, setLeadForm] = useState({ score: '', detail: '', phone: '' });
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const [leadLoading, setLeadLoading] = useState(false);
-
-  useEffect(() => {
-    async function loadColleges() {
-      setLoading(true);
-      try {
-        const data = await apiService.getColleges({ stream: meta.streamFilter });
-        if (data && Array.isArray(data)) {
-          setColleges(data);
-        } else if (data && data.data && Array.isArray(data.data)) {
-          setColleges(data.data);
-        } else {
-          setColleges([]);
-        }
-      } catch (err) {
-        console.error("Error fetching stream colleges:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadColleges();
-  }, [meta.streamFilter]);
 
   // Client-side quick filter tabs & instant search
   const filteredColleges = colleges.filter((c) => {

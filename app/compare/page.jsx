@@ -105,6 +105,8 @@ export default function ComparePage() {
                         <img
                           src={col.coverImage}
                           alt={col.name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover"
                         />
                       </div>

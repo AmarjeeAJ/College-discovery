@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import {
   MapPin,
   Star,
@@ -19,16 +20,37 @@ import Modal from '@/components/common/Modal';
 import AdmissionEnquiryForm from '@/components/forms/AdmissionEnquiryForm';
 import CollegeCard from '@/components/college/CollegeCard';
 import { useCompare } from '@/components/comparison/CompareContext';
-import { apiService } from '@/lib/apiService';
+import { collegesData } from '@/lib/data/colleges';
 import { formatPackage } from '@/lib/utils/formatters';
 
 export default function CollegeDetailPage({ params }) {
-  const unwrappedParams = use(params);
-  const slug = unwrappedParams.slug;
+  const routeParams = useParams();
+  const slug = routeParams?.slug || params?.slug || '';
 
-  const [college, setCollege] = useState(null);
-  const [similarColleges, setSimilarColleges] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const college = useMemo(() => {
+    if (!slug) return null;
+    const target = slug.toLowerCase().trim();
+    return (
+      collegesData.find(
+        (c) =>
+          c.slug.toLowerCase() === target ||
+          (c.aliases && c.aliases.some((a) => a.toLowerCase() === target))
+      ) || null
+    );
+  }, [slug]);
+
+  const similarColleges = useMemo(() => {
+    if (!college || !college.stream || college.stream.length === 0) return [];
+    const firstStream = college.stream[0].toLowerCase().replace(/[\.\s-]/g, '');
+    return collegesData
+      .filter(
+        (c) =>
+          c.id !== college.id &&
+          c.stream.some((s) => s.toLowerCase().replace(/[\.\s-]/g, '').includes(firstStream))
+      )
+      .slice(0, 3);
+  }, [college]);
+
   const [activeTab, setActiveTab] = useState('overview');
   const [brochureModalOpen, setBrochureModalOpen] = useState(false);
   const [brochureDownloaded, setBrochureDownloaded] = useState(false);
@@ -36,32 +58,8 @@ export default function CollegeDetailPage({ params }) {
   const { isSelected, addCollege, removeCollege } = useCompare();
 
   useEffect(() => {
-    async function loadCollege() {
-      setLoading(true);
-      const data = await apiService.getCollegeBySlug(slug);
-      if (data) {
-        setCollege(data);
-        if (data.stream && data.stream.length > 0) {
-          const allColleges = await apiService.getColleges({ stream: data.stream[0] });
-          if (allColleges) {
-            setSimilarColleges(allColleges.filter((c) => c.id !== data.id).slice(0, 3));
-          }
-        }
-      }
-      setLoading(false);
-      window.scrollTo(0, 0);
-    }
-    loadCollege();
+    window.scrollTo(0, 0);
   }, [slug]);
-
-  if (loading) {
-    return (
-      <div className="py-32 text-center text-brand-gray">
-        <div className="w-8 h-8 border-2 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <span>Loading comprehensive college profile...</span>
-      </div>
-    );
-  }
 
   if (!college) {
     return (
@@ -100,9 +98,11 @@ export default function CollegeDetailPage({ params }) {
           <img
             src={college.coverImage}
             alt={`${college.name} campus panorama`}
-            className="w-full h-full object-cover opacity-35"
+            fetchPriority="high"
+            decoding="async"
+            className="w-full h-full object-cover opacity-90 object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-black/95 via-brand-black/30 to-black/10" />
         </div>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 -mt-28 relative z-10 pb-6">
@@ -268,6 +268,8 @@ export default function CollegeDetailPage({ params }) {
                         <img
                           src={img}
                           alt={`${college.name} campus view ${i + 1}`}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.currentTarget.onerror = null;
@@ -572,10 +574,10 @@ export default function CollegeDetailPage({ params }) {
                 Need clarification regarding category reservation cutoffs, fee installments, or direct admission procedures?
               </p>
               <a
-                href="tel:+919876543210"
+                href="tel:+919358939090"
                 className="block text-center font-bold text-brand-teal-dark bg-brand-teal-light py-2 rounded border border-brand-teal/30 hover:bg-brand-teal hover:text-white transition-colors"
               >
-                Call: +91 98765 43210
+                Call: +91 93589 39090
               </a>
             </div>
           </aside>

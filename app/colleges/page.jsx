@@ -1,18 +1,16 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { LayoutGrid, List, SlidersHorizontal } from 'lucide-react';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import CollegeCard from '@/components/college/CollegeCard';
 import CollegeFilters from '@/components/college/CollegeFilters';
-import { apiService } from '@/lib/apiService';
+import { collegesData } from '@/lib/data/colleges';
 
 function CollegesDirectoryContent() {
   const searchParams = useSearchParams();
-  const [colleges, setColleges] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
@@ -25,16 +23,65 @@ function CollegesDirectoryContent() {
     sort: searchParams.get('sort') || 'ranking'
   });
 
-  useEffect(() => {
-    async function fetchColleges() {
-      setLoading(true);
-      const data = await apiService.getColleges(filters);
-      if (data) {
-        setColleges(data);
-      }
-      setLoading(false);
+  const colleges = useMemo(() => {
+    let results = [...collegesData];
+
+    if (filters.stream) {
+      const target = filters.stream.toLowerCase().replace(/[\.\s-]/g, '');
+      results = results.filter((c) =>
+        c.stream.some((s) => {
+          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+          return (
+            norm.includes(target) ||
+            target.includes(norm) ||
+            (target === 'btech' && norm.includes('engineering')) ||
+            (target === 'engineering' && norm.includes('btech')) ||
+            (target === 'mba' && norm.includes('management')) ||
+            (target === 'management' && norm.includes('mba'))
+          );
+        })
+      );
     }
-    fetchColleges();
+
+    if (filters.city) {
+      const target = filters.city.toLowerCase().trim();
+      results = results.filter((c) => c.city.toLowerCase() === target);
+    }
+
+    if (filters.type) {
+      const target = filters.type.toLowerCase().trim();
+      results = results.filter((c) => c.type.toLowerCase().includes(target));
+    }
+
+    if (filters.maxFee) {
+      results = results.filter((c) => c.annualFeeNumeric <= Number(filters.maxFee));
+    }
+
+    if (filters.query || filters.q) {
+      const target = (filters.query || filters.q).toLowerCase().trim();
+      results = results.filter(
+        (c) =>
+          c.name.toLowerCase().includes(target) ||
+          (c.shortName && c.shortName.toLowerCase().includes(target)) ||
+          c.city.toLowerCase().includes(target) ||
+          c.state.toLowerCase().includes(target) ||
+          c.stream.some((s) => s.toLowerCase().includes(target))
+      );
+    }
+
+    if (filters.sort === 'ranking') {
+      results.sort((a, b) => (a.nirfRanking || 999) - (b.nirfRanking || 999));
+    } else if (filters.sort === 'fee_low_high') {
+      results.sort((a, b) => (a.annualFeeNumeric || 0) - (b.annualFeeNumeric || 0));
+    } else if (filters.sort === 'fee_high_low') {
+      results.sort((a, b) => (b.annualFeeNumeric || 0) - (a.annualFeeNumeric || 0));
+    } else if (filters.sort === 'package') {
+      results.sort((a, b) => (b.averagePackage || 0) - (a.averagePackage || 0));
+    } else if (filters.sort === 'rating') {
+      results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
+
+    return results;
   }, [filters]);
 
   const handleFilterChange = (key, value) => {
@@ -160,9 +207,7 @@ function CollegesDirectoryContent() {
             <span>Showing <strong className="text-brand-dark">{colleges.length}</strong> institutions</span>
           </div>
 
-          {loading ? (
-            <div className="py-20 text-center text-sm text-brand-gray">Loading colleges...</div>
-          ) : colleges.length === 0 ? (
+          {colleges.length === 0 ? (
             <div className="bg-gray-50 border border-brand-border rounded p-12 text-center space-y-3">
               <h3 className="font-bold text-base text-brand-dark">No colleges match your filters</h3>
               <p className="text-xs text-brand-gray">Try adjusting your stream, fee ceiling, or location search query.</p>

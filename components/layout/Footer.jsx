@@ -61,11 +61,15 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-brand-teal shrink-0" />
-                <span>+91 98765 43210 / +91 0141 2780000</span>
+                <a href="tel:+919358939090" className="hover:text-brand-teal transition-colors">
+                  +91 93589 39090
+                </a>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-brand-teal shrink-0" />
-                <span>admissions@theshineeducation.com</span>
+                <a href="mailto:collegeleadershipdheeraj@gmail.com" className="hover:text-brand-teal transition-colors">
+                  collegeleadershipdheeraj@gmail.com
+                </a>
               </div>
             </div>
           </div>

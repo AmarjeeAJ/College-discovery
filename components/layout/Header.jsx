@@ -14,12 +14,16 @@ export default function Header({ onOpenCounselling }) {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
-  // Close menus on route change
-  useEffect(() => {
+  const closeAll = () => {
     setMobileMenuOpen(false);
     setCollegesDropdown(false);
     setCoursesDropdown(false);
     setLocationsDropdown(false);
+  };
+
+  // Close menus on route change
+  useEffect(() => {
+    closeAll();
   }, [pathname]);
 
   // Handle scroll state for subtle border elevation
@@ -51,16 +55,16 @@ export default function Header({ onOpenCounselling }) {
             </span>
           </div>
           <div className="flex items-center gap-4 text-gray-300">
-            <a href="tel:+919876543210" className="hover:text-brand-teal transition-colors flex items-center gap-1">
+            <a href="tel:+919358939090" className="hover:text-brand-teal transition-colors flex items-center gap-1">
               <Phone className="w-3 h-3 text-brand-teal" />
-              <span className="hidden sm:inline font-medium">+91 98765 43210</span>
+              <span className="hidden sm:inline font-medium">+91 93589 39090</span>
               <span className="sm:hidden">Helpdesk</span>
             </a>
-            <Link href="/compare" className="hover:text-white transition-colors">
+            <Link href="/compare" prefetch={true} className="hover:text-white transition-colors">
               Compare Tool
             </Link>
             <span className="hidden md:inline text-gray-500">|</span>
-            <Link href="/college-listing" className="hidden md:inline hover:text-brand-teal transition-colors font-medium text-gray-200">
+            <Link href="/college-listing" prefetch={true} className="hidden md:inline hover:text-brand-teal transition-colors font-medium text-gray-200">
               For Institutions: List Your College
             </Link>
           </div>
@@ -71,7 +75,7 @@ export default function Header({ onOpenCounselling }) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 sm:h-20 items-center justify-between gap-3 xl:gap-4">
           {/* Official Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 shrink-0 py-2">
+          <Link href="/" prefetch={true} className="flex items-center gap-3 shrink-0 py-2">
             <img
               src="/logo.png"
               alt="College Leadership Logo"
@@ -115,25 +119,25 @@ export default function Header({ onOpenCounselling }) {
                   <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-brand-gray border-b border-brand-border/50">
                     Browse By Discipline
                   </div>
-                  <Link href="/colleges" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark font-medium">
+                  <Link href="/colleges" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark font-medium">
                     All Colleges Directory
                   </Link>
-                  <Link href="/colleges/btech" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/colleges/btech" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     Engineering & B.Tech
                   </Link>
-                  <Link href="/colleges/mba" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/colleges/mba" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     Management & MBA
                   </Link>
-                  <Link href="/colleges/medical" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/colleges/medical" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     Medical & Healthcare
                   </Link>
-                  <Link href="/colleges/law" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/colleges/law" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     Law & Legal Studies
                   </Link>
-                  <Link href="/universities" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark font-semibold border-t border-brand-border/50 text-brand-teal-dark">
+                  <Link href="/universities" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark font-semibold border-t border-brand-border/50 text-brand-teal-dark">
                     Universities in India
                   </Link>
-                  <Link href="/college-listing" className="block px-3 py-2 text-xs hover:bg-brand-teal-light text-brand-teal font-semibold border-t border-brand-border/50">
+                  <Link href="/college-listing" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light text-brand-teal font-semibold border-t border-brand-border/50">
                     Partner With Us: List Your College →
                   </Link>
                 </div>
@@ -157,25 +161,25 @@ export default function Header({ onOpenCounselling }) {
 
               {coursesDropdown && (
                 <div className="absolute left-0 top-full w-60 bg-white border border-brand-border rounded shadow-lg py-2 z-50">
-                  <Link href="/courses" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark font-medium border-b border-brand-border/50">
+                  <Link href="/courses" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark font-medium border-b border-brand-border/50">
                     All Courses Overview
                   </Link>
-                  <Link href="/courses/btech" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/courses/btech" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     B.Tech Course Guide
                   </Link>
-                  <Link href="/courses/computer-science" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/courses/computer-science" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     Computer Science (CSE)
                   </Link>
-                  <Link href="/courses/mba" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/courses/mba" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     MBA Course Guide
                   </Link>
-                  <Link href="/courses/bca" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/courses/bca" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     BCA Program
                   </Link>
-                  <Link href="/courses/bba" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/courses/bba" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     BBA Program
                   </Link>
-                  <Link href="/courses/mca" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/courses/mca" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     MCA Program
                   </Link>
                 </div>
@@ -199,19 +203,19 @@ export default function Header({ onOpenCounselling }) {
 
               {locationsDropdown && (
                 <div className="absolute left-0 top-full w-56 bg-white border border-brand-border rounded shadow-lg py-2 z-50">
-                  <Link href="/locations" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark font-medium border-b border-brand-border/50">
+                  <Link href="/locations" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark font-medium border-b border-brand-border/50">
                     All Education Hubs
                   </Link>
-                  <Link href="/locations/jaipur" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/locations/jaipur" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     Colleges in Jaipur
                   </Link>
-                  <Link href="/locations/delhi" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/locations/delhi" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     Colleges in Delhi NCR
                   </Link>
-                  <Link href="/locations/bangalore" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/locations/bangalore" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     Colleges in Bangalore
                   </Link>
-                  <Link href="/locations/mumbai" className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
+                  <Link href="/locations/mumbai" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-xs hover:bg-brand-teal-light hover:text-brand-teal-dark">
                     Colleges in Mumbai
                   </Link>
                 </div>
@@ -220,6 +224,8 @@ export default function Header({ onOpenCounselling }) {
 
             <Link
               href="/exams"
+              prefetch={true}
+              onClick={closeAll}
               className={`px-2.5 py-2 hover:text-brand-teal transition-colors ${
                 pathname === '/exams' ? 'text-brand-teal font-semibold' : ''
               }`}
@@ -229,6 +235,8 @@ export default function Header({ onOpenCounselling }) {
 
             <Link
               href="/admissions"
+              prefetch={true}
+              onClick={closeAll}
               className={`px-2.5 py-2 hover:text-brand-teal transition-colors ${
                 pathname === '/admissions' ? 'text-brand-teal font-semibold' : ''
               }`}
@@ -238,6 +246,8 @@ export default function Header({ onOpenCounselling }) {
 
             <Link
               href="/rankings"
+              prefetch={true}
+              onClick={closeAll}
               className={`px-2.5 py-2 hover:text-brand-teal transition-colors ${
                 pathname === '/rankings' ? 'text-brand-teal font-semibold' : ''
               }`}
@@ -247,6 +257,8 @@ export default function Header({ onOpenCounselling }) {
 
             <Link
               href="/resources"
+              prefetch={true}
+              onClick={closeAll}
               className={`px-2.5 py-2 hover:text-brand-teal transition-colors ${
                 pathname === '/resources' || pathname.startsWith('/blog') ? 'text-brand-teal font-semibold' : ''
               }`}
@@ -256,6 +268,8 @@ export default function Header({ onOpenCounselling }) {
 
             <Link
               href="/about"
+              prefetch={true}
+              onClick={closeAll}
               className={`px-2.5 py-2 hover:text-brand-teal transition-colors ${
                 pathname === '/about' ? 'text-brand-teal font-semibold' : ''
               }`}
@@ -303,26 +317,26 @@ export default function Header({ onOpenCounselling }) {
             <div className="py-2 border-b border-gray-100 font-bold text-xs uppercase tracking-wider text-brand-teal">
               Colleges
             </div>
-            <Link href="/colleges" className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded">
+            <Link href="/colleges" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded">
               All Colleges Directory
             </Link>
             <div className="grid grid-cols-2 gap-1 pl-2">
-              <Link href="/colleges/btech" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/colleges/btech" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Engineering (B.Tech)
               </Link>
-              <Link href="/colleges/mba" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/colleges/mba" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Management (MBA)
               </Link>
-              <Link href="/colleges/medical" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/colleges/medical" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Medical & MBBS
               </Link>
-              <Link href="/colleges/law" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/colleges/law" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Law & Legal
               </Link>
-              <Link href="/universities" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/universities" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Universities
               </Link>
-              <Link href="/college-listing" className="block px-2 py-1.5 text-xs text-brand-teal font-semibold hover:underline col-span-2">
+              <Link href="/college-listing" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-teal font-semibold hover:underline col-span-2">
                 • For Institutions: List Your College →
               </Link>
             </div>
@@ -331,22 +345,22 @@ export default function Header({ onOpenCounselling }) {
               Courses
             </div>
             <div className="grid grid-cols-2 gap-1 pl-2">
-              <Link href="/courses" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/courses" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • All Courses
               </Link>
-              <Link href="/courses/btech" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/courses/btech" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • B.Tech Guide
               </Link>
-              <Link href="/courses/computer-science" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/courses/computer-science" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Computer Science
               </Link>
-              <Link href="/courses/mba" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/courses/mba" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • MBA
               </Link>
-              <Link href="/courses/bca" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/courses/bca" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • BCA
               </Link>
-              <Link href="/courses/bba" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/courses/bba" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • BBA
               </Link>
             </div>
@@ -355,40 +369,40 @@ export default function Header({ onOpenCounselling }) {
               Locations
             </div>
             <div className="grid grid-cols-2 gap-1 pl-2">
-              <Link href="/locations/jaipur" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/locations/jaipur" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Jaipur
               </Link>
-              <Link href="/locations/delhi" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/locations/delhi" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Delhi NCR
               </Link>
-              <Link href="/locations/bangalore" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/locations/bangalore" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Bangalore
               </Link>
-              <Link href="/locations/mumbai" className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
+              <Link href="/locations/mumbai" prefetch={true} onClick={closeAll} className="block px-2 py-1.5 text-xs text-brand-gray hover:text-brand-teal">
                 • Mumbai
               </Link>
             </div>
 
             <div className="pt-3 space-y-1">
-              <Link href="/compare" className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
+              <Link href="/compare" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
                 Compare Colleges
               </Link>
-              <Link href="/admissions" className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
+              <Link href="/admissions" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
                 Admissions 2026
               </Link>
-              <Link href="/exams" className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
+              <Link href="/exams" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
                 Entrance Exams
               </Link>
-              <Link href="/rankings" className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
+              <Link href="/rankings" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
                 College Rankings
               </Link>
-              <Link href="/resources" className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
+              <Link href="/resources" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
                 Resources & Blog
               </Link>
-              <Link href="/about" className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
+              <Link href="/about" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
                 About Us
               </Link>
-              <Link href="/contact" className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
+              <Link href="/contact" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
                 Contact
               </Link>
             </div>

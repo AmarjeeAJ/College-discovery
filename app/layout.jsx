@@ -1,8 +1,16 @@
 import './globals.css';
+import { Suspense } from 'react';
+import { Inter } from 'next/font/google';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import NavigationProgress from '@/components/common/NavigationProgress';
 import { CompareProvider } from '@/components/comparison/CompareContext';
 import CompareBar from '@/components/comparison/CompareBar';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata = {
   title: {
@@ -37,8 +45,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.className}>
       <body className="min-h-screen flex flex-col bg-white text-brand-dark antialiased">
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
         <Header />
         <CompareProvider>
           <main className="flex-1">

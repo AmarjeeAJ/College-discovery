@@ -100,42 +100,56 @@ export default function AboutPage() {
       <section className="space-y-6 pt-6 border-t border-brand-border">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
-            Our Counselors
+            Executive Leadership & Advisory Desk
           </span>
-          <h2 className="text-2xl font-bold text-brand-dark">
-            Senior Academic Advisory Desk
+          <h2 className="text-2xl sm:text-3xl font-bold text-brand-dark">
+            Meet the Leadership Team
           </h2>
+          <p className="text-xs sm:text-sm text-brand-gray mt-1 max-w-2xl">
+            Passionate educationists and strategists dedicated to making higher education transparent, accessible, and outcome-oriented.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             {
-              name: "Avijit Sen",
-              role: "Lead Educational Strategist & Founder",
-              exp: "14+ Years in Higher Education Admissions",
-              bio: "Specializes in national engineering admissions, JoSAA/CSAB choice architectures, and ROI optimization for private technical universities."
+              name: "DHEERAJ K.",
+              role: "Founder & CEO @ College Leadership",
+              exp: "Executive MBA | Educational Discovery Strategist",
+              image: "/images/team/dheeraj-k.jpg",
+              bio: "Visionary founder steering College Leadership to transform higher education discovery, audited fee transparency, and verified 1-on-1 admission counselling across India."
             },
             {
-              name: "Pooja Sharma",
-              role: "Senior Admissions Counselor - North India",
-              exp: "9+ Years in Rajasthan & NCR Admissions",
-              bio: "Expert on Jaipur and Delhi NCR universities, REAP state counselling, and management quotas across B.Tech, MBA, and BCA programs."
+              name: "Jahnvi Mehta",
+              role: "Managing Director – College Leadership",
+              exp: "Driving Growth, Strategic Alliances & Partnerships",
+              image: "/images/team/jahnvi-mehta.jpg",
+              bio: "Leads institutional growth, university collaborations, direct admission quotas, and student advisory desks across Rajasthan, Delhi NCR, and national academic hubs."
             },
             {
-              name: "Rohit Mathur",
-              role: "Career & Financial Aid Advisor",
-              exp: "11+ Years in Student Loan & Scholarship Advisory",
-              bio: "Assists students in navigating government merit-cum-means waivers, commercial education loans, and institutional fee concessions."
+              name: "Creative & Media Lead",
+              role: "Senior Graphic Designer @ College Leadership",
+              exp: "Brand Identity, Visual Media & Portal Experience",
+              image: "/images/team/designer.jpg",
+              bio: "Spearheads the digital UI design, verified college publication guides, multimedia student resources, and brand experience across all College Leadership platforms."
             }
           ].map((member, idx) => (
-            <div key={idx} className="border border-brand-border bg-white rounded p-6 space-y-2">
-              <div className="w-12 h-12 rounded bg-brand-teal text-white flex items-center justify-center font-bold text-base mb-3">
-                {member.name.split(' ').map((n) => n[0]).join('')}
+            <div key={idx} className="border border-brand-border bg-white rounded p-6 space-y-3 hover:border-brand-teal hover:shadow-subtle transition-all">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-brand-teal shrink-0 shadow-sm bg-gray-100">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-brand-dark leading-tight">{member.name}</h3>
+                  <div className="text-xs text-brand-teal font-semibold mt-0.5">{member.role}</div>
+                  <div className="text-[11px] text-gray-400 mt-0.5">{member.exp}</div>
+                </div>
               </div>
-              <h3 className="font-bold text-base text-brand-dark">{member.name}</h3>
-              <div className="text-xs text-brand-teal font-semibold">{member.role}</div>
-              <div className="text-[11px] text-gray-400">{member.exp}</div>
-              <p className="text-xs text-brand-gray leading-relaxed pt-2 border-t border-gray-100">
+              <p className="text-xs text-brand-gray leading-relaxed pt-3 border-t border-gray-100">
                 {member.bio}
               </p>
             </div>
