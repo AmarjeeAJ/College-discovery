@@ -443,19 +443,29 @@ export default function StreamCollegesPage({ params }) {
 
   const colleges = useMemo(() => {
     const target = meta.streamFilter.toLowerCase().replace(/[\.\s-]/g, '');
-    return collegesData.filter((c) =>
+    let matched = collegesData.filter((c) =>
       c.stream.some((s) => {
         const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
         return (
           norm.includes(target) ||
           target.includes(norm) ||
-          (target === 'btech' && norm.includes('engineering')) ||
-          (target === 'engineering' && norm.includes('btech')) ||
-          (target === 'mba' && norm.includes('management')) ||
-          (target === 'management' && norm.includes('mba'))
+          ((target === 'btech' || target === 'engineering') && (norm.includes('engineering') || norm.includes('btech') || norm.includes('computerscience'))) ||
+          ((target === 'mba' || target === 'management') && (norm.includes('management') || norm.includes('mba') || norm.includes('bba') || norm.includes('commerce'))) ||
+          (target === 'medical' && (norm.includes('medical') || norm.includes('mbbs') || norm.includes('pharmacy') || norm.includes('nursing') || norm.includes('health'))) ||
+          (target === 'law' && (norm.includes('law') || norm.includes('legal'))) ||
+          (target === 'universities' && (norm.includes('universities') || c.type?.toLowerCase().includes('university') || c.type?.toLowerCase().includes('institute of national'))) ||
+          ((target === 'bca' || target === 'mca' || target === 'computerscience') && (norm.includes('bca') || norm.includes('mca') || norm.includes('computerscience') || norm.includes('btech')))
         );
       })
     );
+
+    // Smart preference: Premier Government and Top Private universities/colleges prioritized at the top
+    return matched.sort((a, b) => {
+      const rankA = a.nirfRanking || 999;
+      const rankB = b.nirfRanking || 999;
+      if (rankA !== rankB) return rankA - rankB;
+      return (b.averagePackage || 0) - (a.averagePackage || 0);
+    });
   }, [meta.streamFilter]);
 
   const [loading, setLoading] = useState(false);

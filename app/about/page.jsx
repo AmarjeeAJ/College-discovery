@@ -97,7 +97,7 @@ export default function AboutPage() {
       </div>
 
       {/* Leadership & Advisory Team */}
-      <section className="space-y-6 pt-6 border-t border-brand-border">
+      {/* <section className="space-y-6 pt-6 border-t border-brand-border">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
             Executive Leadership & Advisory Desk
@@ -155,7 +155,7 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Action CTA */}
       <section className="border border-brand-border bg-brand-teal-light/40 rounded p-8 flex flex-col sm:flex-row items-center justify-between gap-6">

@@ -23,11 +23,56 @@ export default function CourseDetailPage({ params }) {
   const relatedColleges = useMemo(() => {
     if (!course) return [];
     const streamTarget = (course.shortName || course.stream || '').toLowerCase().replace(/[\.\s-]/g, '');
-    return collegesData
-      .filter((c) =>
-        c.stream.some((s) => s.toLowerCase().replace(/[\.\s-]/g, '').includes(streamTarget))
-      )
-      .slice(0, 3);
+    const isBTech = streamTarget.includes('btech') || streamTarget.includes('cse') || streamTarget.includes('engineering') || course.slug === 'btech' || course.slug === 'computer-science';
+    const isMBA = streamTarget.includes('mba') || streamTarget.includes('management') || course.slug === 'mba' || course.slug === 'bba';
+    const isIT = streamTarget.includes('bca') || streamTarget.includes('mca') || streamTarget.includes('computerapplications') || course.slug === 'bca' || course.slug === 'mca';
+    const isMedical = streamTarget.includes('medical') || streamTarget.includes('medicine') || streamTarget.includes('pharmacy') || streamTarget.includes('nursing');
+    const isLaw = streamTarget.includes('law') || streamTarget.includes('legal') || streamTarget.includes('llb');
+
+    let matched = collegesData.filter((c) => {
+      if (isBTech) {
+        return c.stream.some((s) => {
+          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+          return norm.includes('btech') || norm.includes('engineering') || norm.includes('computerscience');
+        });
+      }
+      if (isMBA) {
+        return c.stream.some((s) => {
+          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+          return norm.includes('mba') || norm.includes('management') || norm.includes('bba') || norm.includes('commerce');
+        });
+      }
+      if (isIT) {
+        return c.stream.some((s) => {
+          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+          return norm.includes('bca') || norm.includes('mca') || norm.includes('computerscience') || norm.includes('btech');
+        });
+      }
+      if (isMedical) {
+        return c.stream.some((s) => {
+          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+          return norm.includes('medical') || norm.includes('mbbs') || norm.includes('pharmacy') || norm.includes('nursing') || norm.includes('health');
+        });
+      }
+      if (isLaw) {
+        return c.stream.some((s) => {
+          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+          return norm.includes('law') || norm.includes('legal');
+        });
+      }
+      return c.stream.some((s) => {
+        const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+        return norm.includes(streamTarget) || streamTarget.includes(norm);
+      });
+    });
+
+    // Sort with smart preference: premier Government and top Private universities/colleges prioritized
+    return matched.sort((a, b) => {
+      const rankA = a.nirfRanking || 999;
+      const rankB = b.nirfRanking || 999;
+      if (rankA !== rankB) return rankA - rankB;
+      return (b.averagePackage || 0) - (a.averagePackage || 0);
+    });
   }, [course]);
 
   const otherCourses = useMemo(() => {

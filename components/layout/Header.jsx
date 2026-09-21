@@ -85,14 +85,14 @@ export default function Header({ onOpenCounselling }) {
                 e.currentTarget.src = "/emblem.png";
               }}
             />
-            <div className="hidden lg:block border-l border-brand-border pl-3">
+            {/* <div className="hidden lg:block border-l border-brand-border pl-3">
               <span className="block text-[11px] font-bold uppercase tracking-wider text-brand-teal">
                 Educational Discovery
               </span>
               <span className="block text-[11px] text-brand-gray font-medium">
                 Admissions & Counselling
               </span>
-            </div>
+            </div> */}
           </Link>
 
           {/* Desktop Navigation Links */}
