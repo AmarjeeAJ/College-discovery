@@ -73,16 +73,25 @@ async function main() {
   fs.copyFileSync(fallbackPath, defaultPath);
   console.log('Saved campus-fallback.jpg and default.jpg');
 
+  const { collegesData } = require("../lib/data/colleges.js");
+  const authenticPhotos = new Set(["campus-fallback.jpg", "default.jpg", "mnit-jaipur.jpg", "chandigarh-university.jpg", "jecrc-university.jpg", "geeta-university.jpg", "poddar-institutions.jpg"]);
+  collegesData.forEach(c => {
+    if (c.coverImage) authenticPhotos.add(path.basename(c.coverImage));
+    if (Array.isArray(c.campusImages)) {
+      c.campusImages.forEach(img => authenticPhotos.add(path.basename(img)));
+    }
+  });
+
   const files = fs.readdirSync(collegesDir);
   let replacedCount = 0;
   files.forEach(file => {
-    if (file !== 'mnit-jaipur.jpg' && file.endsWith('.jpg')) {
+    if (!authenticPhotos.has(file) && file.endsWith(".jpg")) {
       fs.copyFileSync(fallbackPath, path.join(collegesDir, file));
       replacedCount++;
     }
   });
 
-  console.log(`Replaced ${replacedCount} placeholder images with clean neutral verified campus asset. Preserved authentic mnit-jaipur.jpg.`);
+  console.log(`Preserved ${authenticPhotos.size} authentic college assets. Updated un-imaged placeholders.`);
 }
 
 main().catch(err => console.error(err));
