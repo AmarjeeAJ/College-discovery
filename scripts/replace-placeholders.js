@@ -74,7 +74,12 @@ async function main() {
   console.log('Saved campus-fallback.jpg and default.jpg');
 
   const { collegesData } = require("../lib/data/colleges.js");
-  const authenticPhotos = new Set(["campus-fallback.jpg", "default.jpg", "mnit-jaipur.jpg", "chandigarh-university.jpg", "jecrc-university.jpg", "geeta-university.jpg", "poddar-institutions.jpg"]);
+  const authenticPhotos = new Set([
+    "campus-fallback.jpg", "default.jpg", "mnit-jaipur.jpg", "chandigarh-university.jpg",
+    "jecrc-university.jpg", "geeta-university.jpg", "poddar-institutions.jpg",
+    "sms-medical-college.jpg", "cmc-vellore.jpg", "jipmer-puducherry.jpg", "mamc-delhi.jpg", "kmc-manipal.jpg",
+    "aiims-new-delhi.jpg"
+  ]);
   collegesData.forEach(c => {
     if (c.coverImage) authenticPhotos.add(path.basename(c.coverImage));
     if (Array.isArray(c.campusImages)) {
