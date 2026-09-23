@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { MapPin, Star, ArrowRight, Check, Plus } from 'lucide-react';
 import Button from '../common/Button';
@@ -9,7 +9,7 @@ import { formatPackage } from '@/lib/utils/formatters';
 
 const FALLBACK_IMAGE = '/images/colleges/campus-fallback.jpg';
 
-export default function CollegeCard({ college, viewMode = 'grid' }) {
+export default function CollegeCard({ college, viewMode = 'grid', activeStream }) {
   const { isSelected, addCollege, removeCollege } = useCompare();
   const selected = isSelected(college.id);
   const [imgSrc, setImgSrc] = useState(college.coverImage || FALLBACK_IMAGE);
@@ -33,6 +33,39 @@ export default function CollegeCard({ college, viewMode = 'grid' }) {
       addCollege(college);
     }
   };
+
+  const displayStreams = useMemo(() => {
+    if (!college.stream || !Array.isArray(college.stream)) return [];
+    if (!activeStream) return college.stream.slice(0, 3);
+    const activeLower = activeStream.toLowerCase();
+
+    const isTarget = (s) => {
+      const norm = s.toLowerCase();
+      if (activeLower === 'mba' || activeLower === 'management') {
+        return norm === 'mba' || norm === 'management' || norm === 'pgdm' || norm === 'bba';
+      }
+      if (activeLower === 'btech' || activeLower === 'engineering') {
+        return norm === 'engineering' || norm === 'b.tech' || norm === 'btech' || norm === 'computerscience';
+      }
+      if (activeLower === 'medical') {
+        return norm === 'medical' || norm === 'mbbs';
+      }
+      if (activeLower === 'law') {
+        return norm === 'law' || norm === 'legal';
+      }
+      return norm.includes(activeLower);
+    };
+
+    const prioritized = [...college.stream].sort((a, b) => {
+      const aMatch = isTarget(a);
+      const bMatch = isTarget(b);
+      if (aMatch && !bMatch) return -1;
+      if (!aMatch && bMatch) return 1;
+      return 0;
+    });
+
+    return prioritized.slice(0, 3);
+  }, [college.stream, activeStream]);
 
   if (viewMode === 'list') {
     return (
@@ -209,7 +242,7 @@ export default function CollegeCard({ college, viewMode = 'grid' }) {
 
           {/* Stream Badges */}
           <div className="flex flex-wrap gap-1 mb-3">
-            {college.stream.slice(0, 3).map((st, i) => (
+            {displayStreams.map((st, i) => (
               <span
                 key={i}
                 className="text-[11px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded-sm font-medium"

@@ -28,19 +28,29 @@ function CollegesDirectoryContent() {
 
     if (filters.stream) {
       const target = filters.stream.toLowerCase().replace(/[\.\s-]/g, '');
-      results = results.filter((c) =>
-        c.stream.some((s) => {
-          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
-          return (
-            norm.includes(target) ||
-            target.includes(norm) ||
-            (target === 'btech' && norm.includes('engineering')) ||
-            (target === 'engineering' && norm.includes('btech')) ||
-            (target === 'mba' && norm.includes('management')) ||
-            (target === 'management' && norm.includes('mba'))
-          );
-        })
-      );
+      if (target === 'mba' || target === 'management') {
+        results = results.filter((c) => {
+          const hasMbaCourse = c.courses && c.courses.some((course) => /mba|pgdm|master of business administration|post graduate program in management/i.test(course.name));
+          const isDedicatedBschool = c.type && /business school|management institute/i.test(c.type);
+          const hasMbaStream = c.stream.some((s) => {
+            const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+            return norm === 'mba' || norm === 'management' || norm === 'pgdm';
+          });
+          return hasMbaStream && (hasMbaCourse || isDedicatedBschool);
+        });
+      } else {
+        results = results.filter((c) =>
+          c.stream.some((s) => {
+            const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+            return (
+              norm.includes(target) ||
+              target.includes(norm) ||
+              (target === 'btech' && norm.includes('engineering')) ||
+              (target === 'engineering' && norm.includes('btech'))
+            );
+          })
+        );
+      }
     }
 
     if (filters.city) {
@@ -221,7 +231,7 @@ function CollegesDirectoryContent() {
           ) : (
             <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'space-y-4'}>
               {colleges.map((college) => (
-                <CollegeCard key={college.id} college={college} viewMode={viewMode} />
+                <CollegeCard key={college.id} college={college} viewMode={viewMode} activeStream={filters.stream} />
               ))}
             </div>
           )}

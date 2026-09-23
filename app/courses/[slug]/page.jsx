@@ -26,7 +26,7 @@ export default function CourseDetailPage({ params }) {
     const isBTech = streamTarget.includes('btech') || streamTarget.includes('cse') || streamTarget.includes('engineering') || course.slug === 'btech' || course.slug === 'computer-science';
     const isMBA = streamTarget.includes('mba') || streamTarget.includes('management') || course.slug === 'mba' || course.slug === 'bba';
     const isIT = streamTarget.includes('bca') || streamTarget.includes('mca') || streamTarget.includes('computerapplications') || course.slug === 'bca' || course.slug === 'mca';
-    const isMedical = streamTarget.includes('medical') || streamTarget.includes('medicine') || streamTarget.includes('pharmacy') || streamTarget.includes('nursing');
+    const isMedical = streamTarget.includes('medical') || streamTarget.includes('medicine') || streamTarget.includes('mbbs') || course.slug === 'mbbs';
     const isLaw = streamTarget.includes('law') || streamTarget.includes('legal') || streamTarget.includes('llb');
 
     let matched = collegesData.filter((c) => {
@@ -37,9 +37,12 @@ export default function CourseDetailPage({ params }) {
         });
       }
       if (isMBA) {
+        const hasMbaCourse = c.courses && c.courses.some((course) => /mba|pgdm|master of business administration|post graduate program in management/i.test(course.name));
+        const isDedicatedBschool = c.type && /business school|management institute/i.test(c.type);
+        if (!hasMbaCourse && !isDedicatedBschool) return false;
         return c.stream.some((s) => {
           const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
-          return norm.includes('mba') || norm.includes('management') || norm.includes('bba') || norm.includes('commerce');
+          return norm.includes('mba') || norm.includes('management') || norm.includes('pgdm');
         });
       }
       if (isIT) {
@@ -48,11 +51,11 @@ export default function CourseDetailPage({ params }) {
           return norm.includes('bca') || norm.includes('mca') || norm.includes('computerscience') || norm.includes('btech');
         });
       }
-      if (isMedical) {
-        return c.stream.some((s) => {
-          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
-          return norm.includes('medical') || norm.includes('mbbs') || norm.includes('pharmacy') || norm.includes('nursing') || norm.includes('health');
-        });
+            if (isMedical) {
+        const hasMbbsCourse = c.courses && c.courses.some((course) => /mbbs|bachelor of medicine/i.test(course.name));
+        const hasMedicalStream = c.stream && c.stream.some((s) => s.toLowerCase() === 'medical' || s.toLowerCase() === 'mbbs');
+        const isDedicatedMedical = c.type && /medical/i.test(c.type);
+        return (hasMbbsCourse || isDedicatedMedical || hasMedicalStream) && (!c.stream.includes('B.Tech') && !c.stream.includes('MBA') || hasMbbsCourse);
       }
       if (isLaw) {
         return c.stream.some((s) => {
@@ -226,7 +229,7 @@ export default function CourseDetailPage({ params }) {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {relatedColleges.map((c) => (
-                  <CollegeCard key={c.id} college={c} />
+                  <CollegeCard key={c.id} college={c} activeStream={course.slug} />
                 ))}
               </div>
             </section>

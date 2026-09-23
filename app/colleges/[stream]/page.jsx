@@ -213,7 +213,7 @@ const streamMetadata = {
       },
       {
         name: "High-ROI Autonomous & Tech-B-Schools",
-        institutes: "Manipal University (MUJ), TAPMI, JECRC Business School, MNIT Dept of Management",
+        institutes: "Manipal University (MUJ), TAPMI, JECRC Business School, Doon Business School",
         cutoffs: "75 - 88 CAT / CMAT",
         avgPackage: "₹8.5 - ₹14.0 LPA",
         focus: "Digital Marketing, Financial Analytics, Supply Chain Logistics, Corporate HR"
@@ -443,23 +443,58 @@ export default function StreamCollegesPage({ params }) {
 
   const colleges = useMemo(() => {
     const target = meta.streamFilter.toLowerCase().replace(/[\.\s-]/g, '');
-    let matched = collegesData.filter((c) =>
-      c.stream.some((s) => {
-        const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
-        return (
-          norm.includes(target) ||
-          target.includes(norm) ||
-          ((target === 'btech' || target === 'engineering') && (norm.includes('engineering') || norm.includes('btech') || norm.includes('computerscience'))) ||
-          ((target === 'mba' || target === 'management') && (norm.includes('management') || norm.includes('mba') || norm.includes('bba') || norm.includes('commerce'))) ||
-          (target === 'medical' && (norm.includes('medical') || norm.includes('mbbs') || norm.includes('pharmacy') || norm.includes('nursing') || norm.includes('health'))) ||
-          (target === 'law' && (norm.includes('law') || norm.includes('legal'))) ||
-          (target === 'universities' && (norm.includes('universities') || c.type?.toLowerCase().includes('university') || c.type?.toLowerCase().includes('institute of national'))) ||
-          ((target === 'bca' || target === 'mca' || target === 'computerscience') && (norm.includes('bca') || norm.includes('mca') || norm.includes('computerscience') || norm.includes('btech')))
-        );
-      })
-    );
+    let matched = collegesData.filter((c) => {
+      // 1. Strict Medical Filtering: ONLY colleges that genuinely provide Medical / MBBS degrees
+      if (target === 'medical') {
+        const hasMbbsCourse = c.courses && c.courses.some((course) => /mbbs|bachelor of medicine/i.test(course.name));
+        const hasMedicalStream = c.stream && c.stream.some((s) => s.toLowerCase() === 'medical' || s.toLowerCase() === 'mbbs');
+        const isDedicatedMedical = c.type && /medical/i.test(c.type);
+        return (hasMbbsCourse || isDedicatedMedical || hasMedicalStream) && (!c.stream.includes('B.Tech') && !c.stream.includes('MBA') || hasMbbsCourse);
+      }
 
-    // Smart preference: Premier Government and Top Private universities/colleges prioritized at the top
+      // 2. Strict Engineering / B.Tech Filtering
+      if (target === 'btech' || target === 'engineering') {
+        return c.stream.some((s) => {
+          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+          return norm === 'engineering' || norm === 'btech' || norm === 'computerscience';
+        });
+      }
+
+      // 3. Strict MBA / Management Filtering: ONLY institutions providing accredited MBA / PGDM programs
+      if (target === 'mba' || target === 'management') {
+        const hasMbaCourse = c.courses && c.courses.some((course) => /mba|pgdm|master of business administration|post graduate program in management/i.test(course.name));
+        const isDedicatedBschool = c.type && /business school|management institute/i.test(c.type);
+        const hasMbaStream = c.stream && c.stream.some((s) => {
+          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+          return norm === 'mba' || norm === 'management' || norm === 'pgdm';
+        });
+
+        return hasMbaStream && (hasMbaCourse || isDedicatedBschool);
+      }
+
+      // 4. Strict Law Filtering
+      if (target === 'law') {
+        return c.stream.some((s) => {
+          const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+          return norm === 'law' || norm === 'legal';
+        });
+      }
+
+      // 5. Comprehensive Universities
+      if (target === 'universities') {
+        return (
+          c.type?.toLowerCase().includes('university') ||
+          c.type?.toLowerCase().includes('institute of national') ||
+          c.stream.some((s) => s.toLowerCase() === 'universities')
+        );
+      }
+
+      return c.stream.some((s) => {
+        const norm = s.toLowerCase().replace(/[\.\s-]/g, '');
+        return norm.includes(target) || target.includes(norm);
+      });
+    });
+
     return matched.sort((a, b) => {
       const rankA = a.nirfRanking || 999;
       const rankB = b.nirfRanking || 999;
@@ -768,7 +803,7 @@ export default function StreamCollegesPage({ params }) {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredColleges.map((college) => (
-                  <CollegeCard key={college.id} college={college} />
+                  <CollegeCard key={college.id} college={college} activeStream={streamKey} />
                 ))}
               </div>
             )}
