@@ -256,11 +256,22 @@ export default function Header({ onOpenCounselling }) {
             </Link>
 
             <Link
+              href="/blog"
+              prefetch={true}
+              onClick={closeAll}
+              className={`px-2.5 py-2 hover:text-brand-teal transition-colors ${
+                pathname.startsWith('/blog') ? 'text-brand-teal font-semibold' : ''
+              }`}
+            >
+              Blog
+            </Link>
+
+            <Link
               href="/resources"
               prefetch={true}
               onClick={closeAll}
               className={`px-2.5 py-2 hover:text-brand-teal transition-colors ${
-                pathname === '/resources' || pathname.startsWith('/blog') ? 'text-brand-teal font-semibold' : ''
+                pathname === '/resources' ? 'text-brand-teal font-semibold' : ''
               }`}
             >
               Resources
@@ -396,8 +407,11 @@ export default function Header({ onOpenCounselling }) {
               <Link href="/rankings" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
                 College Rankings
               </Link>
+              <Link href="/blog" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
+                Education Blog & Guides
+              </Link>
               <Link href="/resources" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
-                Resources & Blog
+                Student Resources
               </Link>
               <Link href="/about" prefetch={true} onClick={closeAll} className="block px-3 py-2 text-sm text-brand-dark hover:bg-brand-teal-light rounded font-medium">
                 About Us

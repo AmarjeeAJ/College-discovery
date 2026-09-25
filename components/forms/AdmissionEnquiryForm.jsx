@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send, CheckCircle2, Shield } from 'lucide-react';
 import Button from '../common/Button';
 import { apiService } from '@/lib/apiService';
@@ -15,6 +15,18 @@ export default function AdmissionEnquiryForm({ defaultCollege = '', defaultCours
     preferredCollege: defaultCollege || '',
     message: ''
   });
+
+  useEffect(() => {
+    if (defaultCourse) {
+      setFormData((prev) => ({ ...prev, course: defaultCourse }));
+    }
+  }, [defaultCourse]);
+
+  useEffect(() => {
+    if (defaultCollege) {
+      setFormData((prev) => ({ ...prev, preferredCollege: defaultCollege }));
+    }
+  }, [defaultCollege]);
 
   const [status, setStatus] = useState({ loading: false, success: false, error: null, enquiryId: null });
 
