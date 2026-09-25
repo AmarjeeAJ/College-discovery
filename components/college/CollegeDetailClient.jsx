@@ -27,7 +27,7 @@ import { useCompare } from '@/components/comparison/CompareContext';
 import { collegesData } from '@/lib/data/colleges';
 import { formatPackage } from '@/lib/utils/formatters';
 
-function CollegeDetailClientContent({ initialCollege = null, slug: propSlug = '' }) {
+function CollegeDetailClientContent({ initialCollege = null, slug: propSlug = '', basePath = 'college' }) {
   const routeParams = useParams();
   const searchParams = useSearchParams();
   const slug = routeParams?.slug || propSlug || '';
@@ -199,7 +199,16 @@ function CollegeDetailClientContent({ initialCollege = null, slug: propSlug = ''
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative -mt-28 sm:-mt-32 pb-8">
           <Breadcrumbs
             items={[
-              { label: 'Colleges', href: '/colleges' },
+              {
+                label:
+                  basePath === 'universities' || college.type?.toLowerCase().includes('university')
+                    ? 'Universities'
+                    : 'Colleges',
+                href:
+                  basePath === 'universities' || college.type?.toLowerCase().includes('university')
+                    ? '/universities'
+                    : '/colleges'
+              },
               { label: college.city, href: `/locations/${college.city.toLowerCase()}` },
               { label: college.shortName || college.name }
             ]}
@@ -794,7 +803,7 @@ function CollegeDetailClientContent({ initialCollege = null, slug: propSlug = ''
   );
 }
 
-export default function CollegeDetailClient({ initialCollege, slug }) {
+export default function CollegeDetailClient({ initialCollege, slug, basePath = 'college' }) {
   return (
     <Suspense
       fallback={
@@ -803,7 +812,7 @@ export default function CollegeDetailClient({ initialCollege, slug }) {
         </div>
       }
     >
-      <CollegeDetailClientContent initialCollege={initialCollege} slug={slug} />
+      <CollegeDetailClientContent initialCollege={initialCollege} slug={slug} basePath={basePath} />
     </Suspense>
   );
 }

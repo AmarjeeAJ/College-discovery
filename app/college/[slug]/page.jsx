@@ -19,10 +19,14 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const title = college.metaTitle || `${college.name} Admission 2026: Fees, Cutoffs, Courses & Placements`;
+  const title =
+    college.metaTitle ||
+    `${college.name} Admission 2026: Fees, Cutoffs, Courses & Placements`;
   const description =
     college.metaDescription ||
     `Explore verified 2026 admission details for ${college.name} (${college.shortName || college.name}), ${college.city}. Check course fees, eligibility, cutoffs, placements, and application deadlines.`;
+
+  const courseKeywords = (college.courses || []).slice(0, 5).map((c) => `${c.name} fees`);
 
   return {
     title: title,
@@ -35,7 +39,8 @@ export async function generateMetadata({ params }) {
       `${college.shortName} placement package`,
       `${college.name} cutoffs`,
       `${college.city} colleges`,
-      ...(college.stream || []).map((s) => `${s} colleges`)
+      ...(college.stream || []).map((s) => `${s} colleges`),
+      ...courseKeywords
     ].filter(Boolean),
     openGraph: {
       title: title,
@@ -75,7 +80,7 @@ export default async function CollegeDetailPage({ params }) {
       (c.aliases && c.aliases.some((a) => a.toLowerCase() === target))
   );
 
-  // Google Schema.org JSON-LD Structured Data
+  // Google Schema.org JSON-LD Structured Data with Course Schema
   const jsonLd = college
     ? {
         '@context': 'https://schema.org',
@@ -96,6 +101,7 @@ export default async function CollegeDetailPage({ params }) {
               addressCountry: 'IN'
             },
             foundingDate: college.establishedYear ? college.establishedYear.toString() : undefined,
+            priceRange: college.feesRange || '₹₹₹',
             aggregateRating: college.rating
               ? {
                   '@type': 'AggregateRating',
@@ -104,7 +110,27 @@ export default async function CollegeDetailPage({ params }) {
                   bestRating: '5',
                   worstRating: '1'
                 }
-              : undefined
+              : undefined,
+            // Google Rich Course Schema for all verified college courses
+            hasCourse:
+              college.courses && college.courses.length > 0
+                ? college.courses.map((crs) => ({
+                    '@type': 'Course',
+                    name: crs.name,
+                    description: `${crs.degreeLevel || 'Higher Education'} program in ${crs.department || 'Academic Department'}. Duration: ${crs.duration || 'Full-Time'}. Eligibility: ${crs.eligibility || 'Check institutional norms'}.`,
+                    provider: {
+                      '@type': 'CollegeOrUniversity',
+                      name: college.name
+                    },
+                    educationalCredentialAwarded: crs.degreeLevel || 'Degree',
+                    offers: {
+                      '@type': 'Offer',
+                      price: crs.annualFee ? crs.annualFee.replace(/[^0-9]/g, '') : undefined,
+                      priceCurrency: 'INR',
+                      category: 'Annual Tuition'
+                    }
+                  }))
+                : undefined
           },
           college.faqs && college.faqs.length > 0
             ? {
@@ -154,7 +180,7 @@ export default async function CollegeDetailPage({ params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <CollegeDetailClient initialCollege={college} slug={slug} />
+      <CollegeDetailClient initialCollege={college} slug={slug} basePath="college" />
     </>
   );
 }
